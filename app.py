@@ -1,16 +1,44 @@
-
 """AI Study Assistant - Business & Marketing.  Run with:  streamlit run app.py"""
+import sys
+from pathlib import Path
+
+# Make sure Python can find the helper files that sit next to this app.py,
+# no matter which folder the host (e.g. Streamlit Cloud) starts the app from.
+APP_DIR = Path(__file__).resolve().parent
+if str(APP_DIR) not in sys.path:
+    sys.path.insert(0, str(APP_DIR))
+
 import streamlit as st
 
-import ai_service
-import config
-import file_processing
-import prompts
-import validators
-from styles import CSS
-
-st.set_page_config(page_title=config.APP_NAME, page_icon="📈", layout="centered",
+# set_page_config must be the first Streamlit command.
+st.set_page_config(page_title="AI Study Assistant", page_icon="📈", layout="centered",
                    initial_sidebar_state="expanded")
+
+# ---------- startup checks: give a clear message instead of a crash ----------
+REQUIRED_FILES = ["ai_service.py", "app_config.py", "file_processing.py",
+                  "input_checks.py", "prompts.py", "styles.py", "requirements.txt"]
+missing_files = [f for f in REQUIRED_FILES if not (APP_DIR / f).exists()]
+if missing_files:
+    st.error("Some project files are missing, so the app cannot start.")
+    st.markdown("Upload these files to the **same folder as `app.py`** in your "
+                "GitHub repository, then reboot the app:")
+    st.code("\n".join(missing_files))
+    st.stop()
+
+try:
+    import ai_service
+    import app_config as config
+    import file_processing
+    import input_checks as validators
+    import prompts
+    from styles import CSS
+except ModuleNotFoundError as e:
+    st.error(f"A required Python package is missing: {e.name}")
+    st.markdown("Make sure `requirements.txt` is in your repository and lists "
+                "`streamlit`, `anthropic`, `python-dotenv`, `pypdf`, and `python-docx`, "
+                "then reboot the app.")
+    st.stop()
+
 st.markdown(CSS, unsafe_allow_html=True)
 
 # ---------- session state ----------
