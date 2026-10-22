@@ -171,3 +171,9 @@ if any(m["role"] == "assistant" for m in st.session_state.messages):
         for m in st.session_state.messages)
     st.download_button("Download study notes (.md)", export,
                        file_name="study_notes.md", mime="text/markdown")
+ai_service.py
+app_config.py
+file_processing.py
+input_checks.py
+prompts.py
+styles.py
