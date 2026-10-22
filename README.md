@@ -21,8 +21,8 @@ ai-study-assistant/
 ├── ai_service.py           # Talks to the AI API, handles API errors
 ├── prompts.py              # Study modes and instructions sent to the AI
 ├── file_processing.py      # Extracts text from uploaded files
-├── validators.py           # Checks text and file inputs
-├── config.py               # Settings, limits, and API key loading
+├── input_checks.py         # Checks text and file inputs
+├── app_config.py           # Settings, limits, and API key loading
 ├── styles.py               # Custom CSS
 ├── requirements.txt
 ├── .env.example            # Template for your key (no real secrets)
@@ -89,12 +89,19 @@ Other hosts (Render, Railway, Hugging Face Spaces) also work: set
 `ANTHROPIC_API_KEY` as an environment variable and use the start command
 `streamlit run app.py --server.port $PORT --server.address 0.0.0.0`.
 
+**Before deploying, check your GitHub repo.** It must contain all of these files
+in the same folder as `app.py`: `ai_service.py`, `app_config.py`,
+`file_processing.py`, `input_checks.py`, `prompts.py`, `styles.py`, and
+`requirements.txt`. (Upload the files themselves, not the zip.) The app shows a list
+of any missing files if you forget one.
+
 **Cost warning:** anyone with your public URL spends your API credit. Set a
 monthly spend limit in the Anthropic Console, or make the app private.
 
 ## Troubleshooting
 | Message | What to do |
 |---|---|
+| `ModuleNotFoundError: No module named 'ai_service'` or "project files are missing" | Some files were not uploaded to GitHub. Every `.py` file and `requirements.txt` must sit in the same folder as `app.py` (see the checklist above), then reboot the app |
 | "No API key found" | Check `.env` is in the project folder and restart the app |
 | "Your API key was rejected" | Re-copy the key; make sure there are no spaces or quotes |
 | "No credit left" | Add credit under Billing in the Console |
@@ -117,4 +124,4 @@ monthly spend limit in the Anthropic Console, or make the app private.
 - Do not upload confidential or personal data: file contents are sent to the
   AI provider.
 - Not tested against the live API here, so run it once locally with your own key
-  to confirm your setup.# tasueef
+  to confirm your setup.
